@@ -18,15 +18,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the view's delegate
         sceneView.delegate = self
+    
+        let earth = createSphere(radius: 0.2, content: "earth.jpeg", vector: SCNVector3(0, 0.2, -1))
         
-        // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+        let mars = createSphere(radius: 0.15, content: "mars.jpeg", vector: SCNVector3(0.5, 0.2, -1))
         
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let saturn = createSphere(radius: 0.3, content: "saturn.jpeg", vector: SCNVector3(1.2, 0.2, -1))
         
-        // Set the scene to the view
-        sceneView.scene = scene
+        let venus = createSphere(radius: 0.4, content: "venus.jpeg", vector: SCNVector3(2.6, 0.2, -1))
+        
+        sceneView.scene.rootNode.addChildNode(earth)
+        sceneView.scene.rootNode.addChildNode(mars)
+        sceneView.scene.rootNode.addChildNode(saturn)
+        sceneView.scene.rootNode.addChildNode(venus)
+        
+        sceneView.automaticallyUpdatesLighting = true
+    }
+    
+    func createSphere(radius: CGFloat, content:String, vector: SCNVector3) -> SCNNode {
+        let mySphere = SCNSphere(radius: radius)
+        
+        let boxMaterial = SCNMaterial()
+        
+        boxMaterial.diffuse.contents = UIImage(named: "art.scnassets/\(content)")
+        mySphere.materials = [boxMaterial]
+        
+        let node = SCNNode()
+        node.position = vector
+        node.geometry = mySphere
+                                 
+       return node
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,16 +67,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
-    // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
+ 
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
